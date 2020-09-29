@@ -17,19 +17,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
+    @Column(name = "username", unique = true)
     private String username;
-    @Column
+    @Column(name = "email", unique = true)
     private String email;
-    @Column
     private String password;
-    @Column
     private String mobile;
     @Column(name = "isMerchant")
     private Boolean isMerchant;
-    @Column
     private Boolean enabled;
-    @Column
     private Date createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -38,7 +34,16 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @EqualsAndHashCode.Exclude Set<Role> roles;
+    public @EqualsAndHashCode.Exclude Set<Role> roles;
+    @OneToMany(mappedBy = "user")
+    public @EqualsAndHashCode.Exclude Set<UserAddress> addresses;
+    @OneToOne(mappedBy = "user")
+    public @EqualsAndHashCode.Exclude
+    Seller seller;
+    @OneToMany(mappedBy = "user")
+    public @EqualsAndHashCode.Exclude Set<Order> orders;
+    @OneToMany(mappedBy = "user")
+    public @EqualsAndHashCode.Exclude Set<CreditSchemeContri> credits;
 
     public User() {
     }
