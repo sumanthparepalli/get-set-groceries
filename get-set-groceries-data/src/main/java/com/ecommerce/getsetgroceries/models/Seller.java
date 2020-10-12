@@ -6,6 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -16,13 +20,25 @@ public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
+    @NotBlank
     private String sellerName;
+    @NotBlank
     private String doorNo;
+    @NotBlank
     private String streetName;
+    @NotBlank
     private String city;
+//    @NumberFormat(pattern = "[0-9]{6}")
+    @Size(max = 6, min = 6)
     private String zipcode;
+    @NotBlank
     private String state;
+    @DecimalMin(value = "-90")
+    @DecimalMax(value = "+90")
     private double latitude;
+    @DecimalMin(value = "-180")
+    @DecimalMax(value = "+180")
     private double longitude;
 
     @OneToOne

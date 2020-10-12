@@ -1,16 +1,21 @@
 package com.ecommerce.getsetgroceries.models;
 
+import com.ecommerce.getsetgroceries.validation.Username;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(
         name = "users",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}),@UniqueConstraint(columnNames = {"email"})}
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}), @UniqueConstraint(columnNames = {"email"})}
 )
 @Data
 public class User {
@@ -18,43 +23,61 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "username", unique = true)
+    @NotBlank
+    @Username
     private String username;
+    @NotBlank
+    @Email(regexp = ".+@.+\\..+")
     @Column(name = "email", unique = true)
     private String email;
+    @NotBlank
     private String password;
+    @NotBlank
     private String mobile;
-    @Column(name = "isMerchant")
     private Boolean isMerchant;
     private Boolean enabled;
     private Date createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="users_roles",
+            name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    public @EqualsAndHashCode.Exclude Set<Role> roles;
-    @OneToMany(mappedBy = "user")
-    public @EqualsAndHashCode.Exclude Set<UserAddress> addresses;
-    @OneToOne(mappedBy = "user")
-    public @EqualsAndHashCode.Exclude
-    Seller seller;
-    @OneToMany(mappedBy = "user")
-    public @EqualsAndHashCode.Exclude Set<Order> orders;
-    @OneToMany(mappedBy = "user")
-    public @EqualsAndHashCode.Exclude Set<CreditSchemeContri> credits;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public Set<Role> roles;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public Set<UserAddress> addresses;
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public Seller seller;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public Set<Order> orders;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public Set<CreditSchemeContri> credits;
 
     public User() {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
     }
 
-    public User(String username, String email, String password, String mobile, Boolean isMerchant, Boolean enabled, Date date) {
+    public User(String username, String email, String password, String mobile) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
-        this.isMerchant = isMerchant;
-        this.enabled = enabled;
-        this.createdAt = date;
+        this.isMerchant = false;
+        this.enabled = true;
+        this.createdAt = new Date(System.currentTimeMillis());
+        roles = new HashSet<>();
     }
 }

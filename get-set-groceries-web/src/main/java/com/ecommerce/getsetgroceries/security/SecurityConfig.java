@@ -1,6 +1,6 @@
 package com.ecommerce.getsetgroceries.security;
 
-import com.ecommerce.getsetgroceries.services.UserDetailsServiceImpl;
+import com.ecommerce.getsetgroceries.security.services.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,16 +36,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-//                .formLogin()
-//                .loginPage("login")
-//                .loginProcessingUrl("/login")
-//                .and()
                 .authorizeRequests()
-                .antMatchers("/","/login").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/login","/register").anonymous()
                 .antMatchers("/user").hasAuthority("USER")
                 .antMatchers("/seller").hasAuthority("ADMIN")
+                .antMatchers("/css/**","/js/**","/img/**","/fonts/**","/sass/**", "/Source/**").permitAll()
                 .anyRequest()
                 .authenticated();
-        http.formLogin();
+        http.formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .deleteCookies("my-remember-me")
+                .invalidateHttpSession(true)
+                .and()
+                .rememberMe();
     }
 }
