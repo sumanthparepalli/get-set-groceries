@@ -39,6 +39,7 @@ public class UserService {
     {
         User user=userRepo.getUserByUsername(username);
         user.setIsMerchant(true);
+        user.roles.add(roleRepo.findRoleByRoleName("SELLER"));
         seller.user=user;
         sellerRepo.save(seller);
     }

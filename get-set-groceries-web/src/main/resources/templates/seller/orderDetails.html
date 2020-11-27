@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{seller/fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory</title>
+</head>
+<body>
+<th:block layout:fragment="breadcrumb-lis">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Orders</li>
+</th:block>
+<th:block layout:fragment="heading">Orders</th:block>
+
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<th:block layout:fragment="content">
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <!-- column -->
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title border-bottom">Orders</h4>
+                        <!--                    <h6 class="card-subtitle"><code>.table</code></h6>-->
+                        <div th:if="${!orderItems.empty}" class="table-responsive">
+                            <table class="table user-table no-wrap">
+                                <thead>
+                                <tr>
+                                    <th class="border-top-0">ID</th>
+                                    <th class="border-top-0">Product Name</th>
+                                    <th class="border-top-0">Quantity</th>
+                                    <th class="border-top-0">Price</th>
+                                    <th class="border-top-0">Delivery</th>
+<!--                                    <th class="border-top-0">Demand</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${orderItems}">
+                                    <td th:text="${item.orderId}">1</td>
+                                    <td th:text="${item.product.name}">Name</td>
+                                    <td th:text="${item.quantity}">0</td>
+                                    <td th:text="${item.price}">0</td>
+                                    <td th:if="${item.delivered}" class="text-secondary">Delivered</td>
+                                    <td th:if="${!item.delivered}"><button th:id="|${item.orderId}-${item.productId}|" class="btn btn-primary mrk">Mark Delivered</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${orderItems.empty}">
+                            <p class="h3 text-secondary text-center">No Orders yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End PAge Content -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Right sidebar -->
+        <!-- ============================================================== -->
+        <!-- .right-sidebar -->
+        <!-- ============================================================== -->
+        <!-- End Right sidebar -->
+        <!-- ============================================================== -->
+    </div>
+</th:block>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<th:block layout:fragment="post-script">
+    <script>
+        $('.mrk').click(function() {
+            fetch("/seller/orders/mark/"+$(this).attr('id'), {
+                method:"GET"
+            }).then(res => {
+                if(res.ok) {
+                    $(this).parent().html('<span class="text-secondary">Delivered</span>')
+                }
+            })
+        })
+    </script>
+</th:block>
+
+</body>
+</html>

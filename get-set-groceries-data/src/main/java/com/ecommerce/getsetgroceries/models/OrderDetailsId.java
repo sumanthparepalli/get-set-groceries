@@ -6,13 +6,16 @@ import java.io.Serializable;
 
 @Data
 public class OrderDetailsId implements Serializable {
-    private Order order;
-    private Product product;
-    private Seller seller;
+    private long orderId;
+    private long productId;
+    private long sellerId;
 
-    public OrderDetailsId(Order order, Product product, Seller seller) {
-        this.order = order;
-        this.product = product;
-        this.seller = seller;
+    public OrderDetailsId() {
+    }
+
+    public OrderDetailsId(long orderId, long productId, long sellerId) {
+        this.orderId = orderId;
+        this.productId = productId;
+        this.sellerId = sellerId;
     }
 }

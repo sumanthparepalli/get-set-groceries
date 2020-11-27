@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--suppress CheckTagEmptyBody -->
+    <th:block th:insert="fragments/header :: head"></th:block>
+    <title>Login</title>
+</head>
+<body>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: preload"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: menu"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: header"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: hero-content"></th:block>
+
+<!----------------------------------------------------- Content Begins ------------------------------------------------>
+
+<div class="container my-4">
+    <table class="table table-striped text-center border-dark">
+        <thead>
+        <tr>
+            <th>Seller</th>
+            <th>Amount Credited</th>
+            <th>Amount Cleared</th>
+            <th>Discount</th>
+            <th>Credited on</th>
+            <th>Resolvable from</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="credit,i : ${credits}" th:class="${credit.amount>credit.amountResolved}?'table-primary':'table-warning'">
+            <td th:text="${credit.creditSchemeReq.seller.sellerName}"></td>
+            <td th:text="${credit.amount}"></td>
+            <td th:text="${credit.amountResolved}"></td>
+            <td th:text="${credit.creditSchemeReq.discount}"></td>
+            <td th:text="${credit.date}"></td>
+            <td th:text="${release[__${i.index}__]}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!----------------------------------------------------- Content Ends ------------------------------------------------>
+
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: footer"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: scripts"></th:block>
+
+</body>
+</html>

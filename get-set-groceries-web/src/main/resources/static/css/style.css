@@ -171,6 +171,11 @@ ol {
 	letter-spacing: 2px;
 }
 
+.primary-btn:hover
+{
+	color: #ccc;
+}
+
 .site-btn {
 	font-size: 14px;
 	color: #ffffff;
@@ -422,7 +427,7 @@ ol {
 .header__menu ul li {
 	list-style: none;
 	display: inline-block;
-	margin-right: 50px;
+	margin-right: 35px;
 	position: relative;
 }
 
@@ -2790,6 +2795,14 @@ a.nav-link.active
 
 .login_input:focus {
 	border-color: inherit;
+	box-shadow: none;
+}
+
+/*****************
+  Focus None
+******************/
+.focus-no-color:focus
+{
 	box-shadow: none;
 }
 

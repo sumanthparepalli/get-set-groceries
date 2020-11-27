@@ -1,7 +1,6 @@
 package com.ecommerce.getsetgroceries.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -9,6 +8,8 @@ import java.util.Set;
 @Entity
 @Table(name = "credit_scheme_req")
 @Data
+@AllArgsConstructor
+@Builder
 public class CreditSchemeReq {
 
   @Id
@@ -16,17 +17,20 @@ public class CreditSchemeReq {
   private Long id;
   private Double amountRequested;
   private Double amountReceived;
+  private Double amountCleared;
   private Double discount;
   private Long lockingPeriod;
-//  @Column(name = "sellers_id")
-//  private Long sellerId;
+  @Column(name = "sellers_id")
+  private Long sellerId;
 
   @ManyToOne
-  @JoinColumn(name = "sellers_id")
-  public @EqualsAndHashCode.Exclude Seller seller;
+  @JoinColumn(name = "sellers_id", insertable = false, updatable = false)
+  public @EqualsAndHashCode.Exclude @ToString.Exclude
+  Seller seller;
 
   @OneToMany(mappedBy = "creditSchemeReq")
-  public @EqualsAndHashCode.Exclude  Set<CreditSchemeContri> contris;
+  public @EqualsAndHashCode.Exclude @ToString.Exclude
+  Set<CreditSchemeContri> contris;
 
   public CreditSchemeReq() {
   }
@@ -36,6 +40,23 @@ public class CreditSchemeReq {
     this.amountReceived = amountReceived;
     this.discount = discount;
     this.lockingPeriod = lockingPeriod;
-//    this.sellerId = sellerId;
+    this.sellerId = sellerId;
+  }
+
+  public Double getAmount()
+  {
+    return amountRequested-amountReceived;
+  }
+
+  public void addAmount(double amount) {
+    amountReceived+=amount;
+  }
+
+  public void addToCleared(double val)
+  {
+    if(amountCleared!=null)
+      amountCleared+=val;
+    else
+      amountCleared=val;
   }
 }

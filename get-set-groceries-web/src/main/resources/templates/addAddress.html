@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--suppress CheckTagEmptyBody -->
+    <th:block th:insert="fragments/header :: head"></th:block>
+    <title>Login</title>
+</head>
+<body>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: preload"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: menu"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: header"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: hero-content"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: flash-messages"></th:block>
+
+<!----------------------------------------------------- Content Begins ------------------------------------------------>
+
+<div class="container-fluid col-md-7 col-lg-5 offset-md-2 offset-lg-5 centered text-center">
+    <div class="checkout__form col-md-10 col-lg-8 offset-md-1 offset-lg-2 shadow border-light centered my-4 p-0">
+        <h4 class="bg-theme p-2 text-white form-header border-0 w-100">New Address</h4>
+        <div class="px-4 py-3">
+            <form th:action="@{/address/new}" th:method="post" th:object="${addr}">
+                <div class="form-row">
+                    <div class="form-group w-100">
+                        <label for="doorNo" class="sr-only">Door No.</label>
+                        <input type="text" placeholder="Door No" th:field="*{doorNo}"
+                               class="login_input form-control mb-0 p-4" id="doorNo">
+                        <small th:if="${#fields.hasErrors('doorNo')}" th:errors="*{doorNo}"
+                               class="text-danger small"> Door No. cannot be blank</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group  col-6">
+                        <label for="streetName" class="sr-only">Street Name</label>
+                        <input type="text" placeholder="Street Name" th:field="*{streetName}"
+                               class="login_input form-control mb-0 p-4" id="streetName">
+                        <small th:if="${#fields.hasErrors('streetName')}" th:errors="*{streetName}"
+                               class="text-danger small">
+                            Street Name cannot be blank</small>
+                    </div>
+                    <div class="form-group  col-6">
+                        <label for="city" class="sr-only">City</label>
+                        <input type="text" placeholder="City" th:field="*{city}"
+                               class="login_input form-control mb-0 p-4" id="city">
+                        <small th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="text-danger small">
+                            City cannot be blank</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group  col-6">
+                        <label for="zipcode" class="sr-only">zipcode</label>
+                        <input type="text" placeholder="Zipcode" th:field="*{zipcode}"
+                               class="login_input form-control mb-0 p-4" id="zipcode">
+                        <small th:if="${#fields.hasErrors('zipcode')}" th:errors="*{zipcode}"
+                               class="text-danger small">
+                            zipcode cannot be blank</small>
+                    </div>
+                    <div class="form-group  col-6">
+                        <label for="state" class="sr-only">state</label>
+                        <input type="text" placeholder="State" th:field="*{state}"
+                               class="login_input form-control mb-0 p-4" id="state">
+                        <small th:if="${#fields.hasErrors('state')}" th:errors="*{state}" class="text-danger small">
+                            state cannot be blank</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group  col-6">
+                        <label for="latitude" class="sr-only">Latitude</label>
+                        <input type="text" placeholder="Latitude" th:field="*{latitude}"
+                               class="login_input form-control mb-0 p-4" id="latitude">
+                        <small th:if="${#fields.hasErrors('latitude')}" th:errors="*{latitude}"
+                               class="text-danger small">
+                            latitude cannot be blank</small>
+                    </div>
+                    <div class="form-group  col-6">
+                        <label for="longitude" class="sr-only">longitude</label>
+                        <input type="text" placeholder="Longitude" th:field="*{longitude}"
+                               class="login_input form-control mb-0 p-4" id="longitude">
+                        <small th:if="${#fields.hasErrors('longitude')}" th:errors="*{longitude}"
+                               class="text-danger small">
+                            longitude cannot be blank</small>
+                    </div>
+                </div>
+                <input type="submit" value="Register as a Seller"
+                       class="btn bg-theme text-light font-weight-normal w-100 h-50">
+            </form>
+        </div>
+    </div>
+</div>
+
+<!----------------------------------------------------- Content Ends ------------------------------------------------>
+
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: footer"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: scripts"></th:block>
+
+</body>
+</html>

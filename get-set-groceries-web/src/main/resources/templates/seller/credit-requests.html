@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{seller/fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Credit Requests</title>
+</head>
+<body>
+<th:block layout:fragment="breadcrumb-lis">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Credit Requests</li>
+</th:block>
+<th:block layout:fragment="heading">Credit Requests</th:block>
+
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<th:block layout:fragment="content">
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <!-- column -->
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Credit Requests</h4>
+                        <!--                    <h6 class="card-subtitle"><code>.table</code></h6>-->
+                        <div th:if="${credits!=null}" class="table-responsive">
+                            <table class="table user-table no-wrap">
+                                <thead>
+                                <tr>
+                                    <th class="border-top-0">CID</th>
+                                    <th class="border-top-0">Amount Requested</th>
+                                    <th class="border-top-0">Amount Received</th>
+                                    <th class="border-top-0">Discount</th>
+                                    <th class="border-top-0">Locking Period</th>
+                                    <th class="border-top-0">Amount Resolved</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, i : ${credits}">
+                                    <td th:text="${item.id}">1</td>
+                                    <td th:text="${item.amountRequested}">Name</td>
+                                    <td th:text="${item.amountReceived}">0</td>
+                                    <td th:text="${item.discount}">0</td>
+                                    <td th:text="${item.lockingPeriod}">0</td>
+                                    <td th:text="${amounts[__${i.index}__]}">0</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${credits==null}">
+                            <p class="h3 text-secondary text-center">No Requests made yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End PAge Content -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Right sidebar -->
+        <!-- ============================================================== -->
+        <!-- .right-sidebar -->
+        <!-- ============================================================== -->
+        <!-- End Right sidebar -->
+        <!-- ============================================================== -->
+    </div>
+</th:block>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+
+</body>
+</html>

@@ -2,40 +2,60 @@ package com.ecommerce.getsetgroceries.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 @Data
 public class Order {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
-  private double amount;
-  private long paid;
-  private long delivered;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "user_id")
+    private long userId;
+    @Column(name = "address_id")
+    private long addressId;
+    private double total;
+    private boolean paid;
+    private boolean delivered;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private Date orderDate;
+    private double promotion;
+    private double amount;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  public @EqualsAndHashCode.Exclude User user;
-  @ManyToOne
-  @JoinColumn(name = "address_id")
-  public @EqualsAndHashCode.Exclude UserAddress address;
-  @OneToMany(mappedBy = "order")
-  public @EqualsAndHashCode.Exclude   Set<OrderDetails> orderDetails;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
+    public User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", insertable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public UserAddress address;
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    public @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    List<OrderDetails> orderDetails;
 
-  public Order() {
-  }
+    @OneToOne(mappedBy = "order")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    public OrderPayment payment;
 
-  public Order(double amount, long paid, long delivered, User user, UserAddress address, Set<OrderDetails> orderDetails) {
-    this.amount = amount;
-    this.paid = paid;
-    this.delivered = delivered;
-    this.user = user;
-    this.address = address;
-    this.orderDetails = orderDetails;
-  }
+    public Order() {
+    }
+
+    public Order(long userId, long addressId, double amount, boolean paid, boolean delivered) {
+        this.userId = userId;
+        this.addressId = addressId;
+        this.amount = amount;
+        this.paid = paid;
+        this.delivered = delivered;
+    }
 }

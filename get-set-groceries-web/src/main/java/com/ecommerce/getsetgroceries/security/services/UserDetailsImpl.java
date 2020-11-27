@@ -2,6 +2,7 @@ package com.ecommerce.getsetgroceries.security.services;
 
 import com.ecommerce.getsetgroceries.models.Role;
 import com.ecommerce.getsetgroceries.models.User;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+//@Service
 public class UserDetailsImpl implements UserDetails {
 
     private User user;
@@ -58,6 +60,7 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
+    @Bean
     public User getUser() {
         return this.user;
     }

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--suppress CheckTagEmptyBody -->
+    <th:block th:insert="fragments/header :: head"></th:block>
+    <title>Login</title>
+</head>
+<body>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: preload"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: menu"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: header"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: hero-content"></th:block>
+
+<!----------------------------------------------------- Content Begins ------------------------------------------------>
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="/img/breadcrumb.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Orders</h2>
+                    <div class="breadcrumb__option">
+                        <a href="/">Home</a>
+                        <span>Orders</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: flash-messages"></th:block>
+
+<section class="shoping-cart spad" th:if="${orders != null && orders.size()>0}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div th:each="order : ${orders}">
+                    <h3 class="mb-2">
+                        <span>
+                            <strong>Order [[${order.id}]] Summary <small>
+                                <span th:if="${order.paid}" class="badge badge-success p-2">PAID</span>
+                                <span th:if="${!order.paid}" class="badge badge-danger p-2">NOT PAID</span>
+                                <span th:if="${order.delivered}" class="badge badge-success p-2">Delivered</span>
+                                <span th:if="${order.paid && !order.delivered}"
+                                      class="badge badge-warning p-2">In Transit</span>
+                                <a href="/cart/" th:if="${!order.paid}"
+                                   class="btn btn-outline-primary ml-3">Go To Cart</a>
+                            </small></strong>
+                        </span>
+                        <span class="float-right">[[${order.orderDate}]]</span>
+                    </h3>
+                    <div class="table-responsive shoping__cart__table">
+                        <table class="table-striped">
+                            <thead>
+                            <tr>
+                                <th class="shoping__product">Products</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="orderItem,i : ${order.orderDetails}">
+                                <td class="shoping__cart__item">
+                                    <img src="img/cart/cart-1.jpg" alt="">
+                                    <h5 th:text="*{orderItem.product.name}">
+                                        Veggies</h5>
+                                </td>
+                                <td class="shoping__cart__price" th:text="${orderItem.pricePerUnit}">
+                                    $55.00
+                                </td>
+                                <td class="shoping__cart__price" th:text="${orderItem.quantity}">
+                                    2
+                                </td>
+                                <td class="shoping__cart__total" th:text="${orderItem.price}">
+                                    $110.00
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="h4">TOTAL</td>
+                                <td></td>
+                                <td th:text="${order.amount}" class="text-danger"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="shoping-cart spad" th:if="${orders == null || orders.size()==0}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="h3 text-center"> No Orders placed yet </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!----------------------------------------------------- Content Ends ------------------------------------------------>
+
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: footer"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: scripts"></th:block>
+
+</body>
+</html>

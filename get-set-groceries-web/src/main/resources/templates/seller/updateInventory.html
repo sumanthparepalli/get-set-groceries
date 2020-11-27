@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{seller/fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Add to Inventory</title>
+</head>
+<body>
+<th:block layout:fragment="breadcrumb-lis">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Update Inventory</li>
+</th:block>
+
+<th:block layout:fragment="heading">Update Inventory</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row mt-3 d-flex justify-content-center">
+            <div class="col-lg-6 col-xlg-7">
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="@{/seller/inventory/update}" th:method="POST" th:object="${product}"
+                              class="form-horizontal form-material">
+                            <div class="form-group">
+                                <label class="col-sm-12 mb-0">Choose Product</label>
+                                <div class="col-sm-12">
+                                    <select id="product_id" th:field="*{product_id}" class="form-control pl-0 form-control-line">
+                                        <option th:each="product : ${products}" th:value="${product.product_id}">[[${product.product_id}]] - [[${product.product_name}]]</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 mb-0">Product Name</label>
+                                <div class="col-md-12">
+                                    <input class="form-control pl-0 form-control-line" id="product_name" th:field="*{product_name}" th:placeholder="'Write product name here'"/>
+                                    <small th:if="${#fields.hasErrors('product_name')}" th:errors="*{product_name}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 mb-0">Product Description</label>
+                                <div class="col-md-12">
+                                    <textarea class="form-control pl-0 form-control-line" id="product_description" th:field="*{product_description}" th:placeholder="'Write product description here'"></textarea>
+                                    <small th:if="${#fields.hasErrors('product_description')}" th:errors="*{product_description}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 mb-0">Price</label>
+                                <div class="col-md-12">
+                                    <input type="number" step="0.01" th:min="0" id="price" class="form-control pl-0 form-control-line" th:field="*{price}">
+                                    <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 mb-0">Discount</label>
+                                <div class="col-md-12">
+                                    <input type="number" step="0.01" min="0" max="100" id="discount" class="form-control pl-0 form-control-line" th:field="*{discount}">
+                                    <small th:if="${#fields.hasErrors('discount')}" th:errors="*{discount}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-12 mb-0">Quantity</label>
+                                <div class="col-md-12">
+                                    <input type="number" min="0" id="quantity" class="form-control pl-0 form-control-line" th:field="*{quantity}">
+                                    <small th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-12">Select Categories</label>
+                                <div class="col-sm-12">
+                                    <select th:field="*{categories}" id="category" th:multiple="true" class="form-control pl-0 form-control-line">
+                                        <option th:each="cat : ${categories}" th:value="${cat}">[[${cat}]]</option>
+                                    </select>
+                                    <small th:if="${#fields.hasErrors('categories')}" th:errors="*{categories}"
+                                           class="text-danger small"></small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12 d-flex">
+                                    <button class="btn btn-success mx-auto mx-md-0 text-white">Update Inventory</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="post-script">
+    <script>
+        $("#product_id").click(handler);
+        $("#product_id").change(handler);
+        async function handler() {
+            let id = $('#product_id').find(":selected").val();
+            let response = await fetch("/seller/inventory/get/" + id, {
+                method: 'GET'
+            });
+            const res = await response.json();
+            Promise.resolve(res).then(() => {
+                $("#product_name").val(res.product_name);
+                $("#price").val(res.price);
+                $("#quantity").val(res.quantity);
+                $("#discount").val(res.discount);
+                $("#product_description").val(res.product_description);
+                $("#category").val(res.categories);
+            })
+        }
+        handler();
+    </script>
+</th:block>
+</body>
+</html>

@@ -6,11 +6,15 @@ import java.io.Serializable;
 
 @Data
 public class InventoryID implements Serializable {
-    private Seller seller;
-    private Product product;
 
-    public InventoryID(Seller seller, Product product) {
-        this.seller = seller;
-        this.product = product;
+    private long sellerId;
+    private long productId;
+
+    public InventoryID() {
+    }
+
+    public InventoryID(long sellerId, long productId) {
+        this.sellerId = sellerId;
+        this.productId = productId;
     }
 }

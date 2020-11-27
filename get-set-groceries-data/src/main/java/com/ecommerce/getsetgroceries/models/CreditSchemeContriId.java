@@ -1,16 +1,17 @@
 package com.ecommerce.getsetgroceries.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreditSchemeContriId implements Serializable {
-    private CreditSchemeReq creditSchemeReq;
-    private User user;
-
-    public CreditSchemeContriId(CreditSchemeReq creditSchemeReq, User user) {
-        this.creditSchemeReq = creditSchemeReq;
-        this.user = user;
-    }
+    private Long creditSchemeId;
+    private Long userId;
+    private LocalDate date;
 }

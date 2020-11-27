@@ -20,16 +20,20 @@ public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true)
+    @Column(name = "seller_name",unique = true)
     @NotBlank
     private String sellerName;
+    @Column(name = "door_no")
     @NotBlank
     private String doorNo;
+    @Column(name = "street_name")
     @NotBlank
     private String streetName;
+    @Column(name = "city")
     @NotBlank
     private String city;
 //    @NumberFormat(pattern = "[0-9]{6}")
+    @Column(name = "zipcode")
     @Size(max = 6, min = 6)
     private String zipcode;
     @NotBlank

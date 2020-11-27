@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--suppress CheckTagEmptyBody -->
+    <th:block th:insert="fragments/header :: head"></th:block>
+    <title>Login</title>
+</head>
+<body>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: preload"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: menu"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: header"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/header :: hero-content"></th:block>
+<style>
+    .product-item {
+        box-shadow: #ccc 0 0 10px 1px;
+    }
+
+    .product-item:hover {
+        box-shadow: #aaa 0 0 10px 1px;
+    }
+
+    .product-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #656565;
+    }
+
+    .product-name.large {
+        font-size: 21px;
+        line-height: 1.3;
+        font-family: 'Open Sans', sans-serif;
+        color: #000;
+    }
+
+    .product-name small {
+        font-size: .85rem;
+        display: block;
+        width: 100%;
+    }
+</style>
+<!----------------------------------------------------- Content Begins ------------------------------------------------>
+
+<div class="container-fluid">
+    <div class="row mx-5 px-5">
+        <table class="centered table table-responsive w-auto table-hover shadow" style="max-height: 50vh; overflow-y: auto">
+            <thead class="thead-light">
+            <tr>
+                <th style="position: sticky;top: 0"></th>
+                <th style="position: sticky;top: 0">Seller</th>
+                <th style="position: sticky;top: 0">Amount Requested</th>
+                <th style="position: sticky;top: 0">Discount</th>
+                <th style="position: sticky;top: 0">Contribution</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="credit: ${credits}">
+                <td><input type="radio" th:value="${credit.id}" name="credit"></td>
+                <td>[[${credit.seller.sellerName}]]</td>
+                <td>[[${credit.getAmount()}]]</td>
+                <td>[[${credit.discount}]]</td>
+                <td><input type="number" class="form-control" name="contri" step="0.1" min="1"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+<!--    <div class="row mb-5 mt-3 centered">-->
+        <img
+                alt="Visa Checkout"
+                class="v-button row mb-5 mt-3 centered"
+                role="button"
+                src="https://sandbox.secure.checkout.visa.com/wallet-services-web/xo/button.png"
+        />
+<!--    </div>-->
+</div>
+
+<!----------------------------------------------------- Content Ends ------------------------------------------------>
+
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: footer"></th:block>
+<!--suppress CheckTagEmptyBody -->
+<th:block th:insert="fragments/footer :: scripts"></th:block>
+<th:block th:insert="fragments/footer :: checkout-scripts" th:if="${!credits.empty}"> </th:block>
+<script th:if="${!credits.empty}">
+    $('input[thpe=radio]:first').prop('checked', true);
+    $('tbody tr').click((e) => {
+        if ($(e.target).is("td")) {
+            $(e.target).parent().find('input[type=radio]').prop('checked', true);
+            $('input[type=number]').prop('disabled', true);
+            $(e.target).parent().find('input[type=number]').prop('disabled', false);
+        } else {
+            $(e.target).find('input[type=radio]').prop('checked', true);
+            $(e.target).find('input[type=number]').prop('disabled', false);
+        }
+    })
+    $('input[type=number]').prop('disabled', true);
+    $('input[type=radio]').change((e) => {
+        $('input[type=number]').prop('disabled', true);
+        $(e.target).parent().parent().find('input[type=number]').prop('disabled', false);
+    });
+
+    function onVisaCheckoutReady() {
+        V.init({
+            apikey: "3LXNZKOIF92IZSK6ENHZ21cV7A_TdR5y6u08gqnUP2tujkhRE",
+            encryptionKey: "XEXL13IOWKBH18TIO3GO13bFMW28iFzEdVO_Xia_GQVFxc2uA",
+            paymentRequest: {
+                currencyCode: "INR"
+            }
+        });
+        V.on("payment.success", async function (payment) {
+            let amount = $('input[name=credit]:checked').parent().parent().find('input[type=number]').val();
+            if (amount > 0) {
+                let response = await fetch('/credit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': "application/json"
+                    },
+                    body: JSON.stringify({
+                        'id': $('input[name=credit]:checked').val(),
+                        'amount': amount,
+                        'callid':payment.callid
+                    })
+                });
+                const res = await response.json();
+                Promise.resolve(res).then(r => {
+                    if (res.status == 200)
+                        window.location.href = "http://localhost:8082/payment/success?credit=true";
+                    else
+                        alert(res.message);
+                });
+            }
+            else{
+                alert("Invalid amount. Payment failed");
+            }
+        });
+        V.on("payment.error", () => {
+            alert("Error in payment, try again");
+        })
+    }
+</script>
+</body>
+</html>
