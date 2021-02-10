@@ -48,7 +48,7 @@
                                     <td th:text="${item.amountReceived}">0</td>
                                     <td th:text="${item.discount}">0</td>
                                     <td th:text="${item.lockingPeriod}">0</td>
-                                    <td th:text="${amounts[__${i.index}__]}">0</td>
+                                    <td th:text="|${item.amountCleared}|">0</td>
                                 </tr>
                                 </tbody>
                             </table>

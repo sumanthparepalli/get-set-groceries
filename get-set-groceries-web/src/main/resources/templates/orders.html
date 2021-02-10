@@ -42,7 +42,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div th:each="order : ${orders}">
+                <div th:each="order,i : ${orders}">
                     <h3 class="mb-2">
                         <span>
                             <strong>Order [[${order.id}]] Summary <small>
@@ -68,10 +68,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="orderItem,i : ${order.orderDetails}">
-                                <td class="shoping__cart__item">
-                                    <img src="img/cart/cart-1.jpg" alt="">
-                                    <h5 th:text="*{orderItem.product.name}">
+                            <tr th:each="orderItem,j : ${order.orderDetails}">
+                                <td class="shoping__cart__item pl-2">
+                                    <img class="img-thumbnail" width="100px" th:src="${images[__${i.index}__][__${j.index}__]}" th:alt="${orderItem.product.name}">
+                                    <h5 th:text="${orderItem.product.name}">
                                         Veggies</h5>
                                 </td>
                                 <td class="shoping__cart__price" th:text="${orderItem.pricePerUnit}">

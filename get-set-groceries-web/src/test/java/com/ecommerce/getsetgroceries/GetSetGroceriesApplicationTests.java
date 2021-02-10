@@ -4,12 +4,14 @@ import com.ecommerce.getsetgroceries.checkout.xPay;
 import com.ecommerce.getsetgroceries.models.*;
 import com.ecommerce.getsetgroceries.repositories.*;
 import com.ecommerce.getsetgroceries.resultMappings.ProductInventorySeller;
+import com.ecommerce.getsetgroceries.serviceProxy.ImageServiceProxy;
 import com.ecommerce.getsetgroceries.services.CartService;
 import com.ecommerce.getsetgroceries.services.OrderService;
 import com.ecommerce.getsetgroceries.services.ProductService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okio.ByteString;
 import org.hibernate.Hibernate;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -52,6 +57,8 @@ class GetSetGroceriesApplicationTests {
     private OrderService orderService;
     @Autowired
     private CreditSchemeContriRepo creditSchemeContriRepo;
+    @Autowired
+    private ImageServiceProxy imageServiceProxy;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -127,9 +134,8 @@ class GetSetGroceriesApplicationTests {
     }
 
     @Test
-    public void orderDate()
-    {
-        logger.info(orderRepo.findById(5L).get().getOrderDate()+"");
+    public void orderDate() {
+        logger.info(orderRepo.findById(5L).get().getOrderDate() + "");
     }
 
     @Test
@@ -141,7 +147,7 @@ class GetSetGroceriesApplicationTests {
                 .url("https://sandbox.api.visa.com/wallet-services-web/payment/data/1600851408632728302?apikey=3LXNZKOIF92IZSK6ENHZ21cV7A_TdR5y6u08gqnUP2tujkhRE")
                 .method("GET", null)
                 .addHeader("Accept", "application/json")
-                .addHeader("x-pay-token", xPay.generateXpaytoken("payment/data/1600851408632728302","apikey=3LXNZKOIF92IZSK6ENHZ21cV7A_TdR5y6u08gqnUP2tujkhRE","41KyfrlSuiLCCZube/Rf1k3#osxxwk63OegZJ0wQ",""))
+                .addHeader("x-pay-token", xPay.generateXpaytoken("payment/data/1600851408632728302", "apikey=3LXNZKOIF92IZSK6ENHZ21cV7A_TdR5y6u08gqnUP2tujkhRE", "41KyfrlSuiLCCZube/Rf1k3#osxxwk63OegZJ0wQ", ""))
                 .addHeader("Content-Type", "application/json")
                 .build();
         Response response = client.newCall(request).execute();
@@ -186,15 +192,13 @@ class GetSetGroceriesApplicationTests {
     @Test
     @DirtiesContext
     @Transactional
-    void sqlGetOrdersSeller()
-    {
+    void sqlGetOrdersSeller() {
         logger.info(orderDetailsRepo.findAllBySellerIdOrderByDeliveredAscIdDesc(23L).toString());
     }
 
     @Test
     @Transactional
-    void repoAllMyCredits()
-    {
+    void repoAllMyCredits() {
         logger.info(creditSchemeContriRepo.getAllByUserIdOrderByDateDesc(52).toString());
     }
 
@@ -205,4 +209,19 @@ class GetSetGroceriesApplicationTests {
 //                .getResultList();
         logger.info(String.valueOf(cartService.calculatePromotion("sumanth")));
     }
+
+    @Test
+    void getImage() {
+//        logger.info(imageServiceProxy.retrieveImageAsBase64("df036b04-c03e-4669-99d6-6bb8b2de39ff"));
+//        logger.info(imageServiceProxy.uploadFile(new MockMultipartFile("image", "hello.txt",
+//                MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes())));
+        ArrayList<MultipartFile> images = new ArrayList<>();
+        images.add(new MockMultipartFile("image1","hello.txt",MediaType.TEXT_PLAIN_VALUE,"Hello".getBytes()));
+        images.add(new MockMultipartFile("image2","hello2.txt",MediaType.TEXT_PLAIN_VALUE,"Hello2".getBytes()));
+//        logger.info(imageServiceProxy.uploadFiles(images).toString());
+        ByteString boundary;
+        MediaType type;
+//        MultipartBody multipartBody = new MultipartBody();
+    }
+
 }

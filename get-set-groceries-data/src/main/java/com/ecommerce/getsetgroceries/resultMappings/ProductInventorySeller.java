@@ -5,26 +5,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 
-/*
- *   select p.id as product_id, p.name, p.description, s.id as seller_id, s.seller_name, i.price, i.quantity, i.discount,
- *          i.demand from products p
- *          join inventory i on p.id = i.product_id
- *          join sellers s on i.seller_id = s.id
- *          where s.zipcode=:zipcode
- * @EntityResult(entityClass = ProductInventorySeller.class,
-                        fields = {
-                                @FieldResult(name = "product_id", column = "product_id"),
-                                @FieldResult(name = "product_name", column = "name"),
-                                @FieldResult(name = "product_description", column = "description"),
-                                @FieldResult(name = "seller_id", column = "seller_id"),
-                                @FieldResult(name = "seller_name", column = "seller_name"),
-                                @FieldResult(name = "price", column = "price"),
-                                @FieldResult(name = "quantity", column = "quantity"),
-                                @FieldResult(name = "discount", column = "discount"),
-                                @FieldResult(name = "demand", column = "demand")
-                        }
-                )
- * */
+
 @Component
 @Data
 public class ProductInventorySeller {

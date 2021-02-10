@@ -1,5 +1,6 @@
 package com.ecommerce.getsetgroceries.controller.user;
 
+import com.ecommerce.getsetgroceries.models.Product;
 import com.ecommerce.getsetgroceries.repositories.OrderRepo;
 import com.ecommerce.getsetgroceries.repositories.UserAddressRepo;
 import com.ecommerce.getsetgroceries.services.ProductService;
@@ -53,6 +54,7 @@ public class ProductController {
         }
         var products = productService.getProductDetailsByAddressId(addressId, pgNo);
         model.addAttribute("products", products);
+        model.addAttribute("images", productService.getImages(products));
         model.addAttribute("pgNo", pgNo);
         model.addAttribute("pgNo_next", pgNo + 1);
         model.addAttribute("pgNo_prev", pgNo - 1);
@@ -61,8 +63,10 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String displayProduct(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("product", productService.getProduct(id));
+        Product product = productService.getProduct(id);
+        model.addAttribute("product", product);
         model.addAttribute("sellers", productService.getProductSellersByProductId(id));
+        model.addAttribute("images", productService.getImagesOfProduct(product));
         return "product-details";
     }
 }

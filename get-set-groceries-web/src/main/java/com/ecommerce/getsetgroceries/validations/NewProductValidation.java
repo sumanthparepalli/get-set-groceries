@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class NewProductValidation implements Validator {
@@ -24,7 +25,11 @@ public class NewProductValidation implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"discount","required.discount");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"price","required.price");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"categories","required.categories");
-
+        Object img = errors.getFieldValue("images");
+        if(img==null || ((MultipartFile[])img).length==0)
+        {
+            errors.rejectValue("images","required.images");
+        }
         if(product.getPrice() !=null && product.getPrice() <=0)
         {
             errors.rejectValue("price","non-negative.price");

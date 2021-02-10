@@ -1,6 +1,7 @@
 package com.ecommerce.getsetgroceries.controller.user;
 
 import com.ecommerce.getsetgroceries.models.Product;
+import com.ecommerce.getsetgroceries.services.ProductService;
 import com.ecommerce.getsetgroceries.services.SearchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +19,11 @@ import java.util.Set;
 public class SearchController {
 
     private final SearchService searchService;
+    private final ProductService productService;
 
-    public SearchController(SearchService searchService) {
+    public SearchController(SearchService searchService, ProductService productService) {
         this.searchService = searchService;
+        this.productService = productService;
     }
 
     @GetMapping({"", "/"})
@@ -35,14 +38,10 @@ public class SearchController {
             redirectAttributes.addFlashAttribute("flashSuccess", Collections.singletonList("Address should be set first"));
             return "redirect:/";
         }
-//        if(key.length()<3)
-//        {
-//
-//            return "redirect:/";
-//        }
         Set<Product> products = searchService.search(key, addressId);
         model.addAttribute("products", products)
-                .addAttribute("pages", false);
+                .addAttribute("pages", false)
+                .addAttribute("images", productService.getImages(products));
         return "products";
     }
 

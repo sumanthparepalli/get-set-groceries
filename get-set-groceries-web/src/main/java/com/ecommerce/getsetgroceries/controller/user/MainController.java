@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.Optional;
 
@@ -52,17 +54,12 @@ public class MainController {
         }
     }
 
-    @GetMapping("/user")
-    @CrossOrigin(origins = "http://localhost:8082")
-    @ResponseBody
-    public String userHome() {
-        return "Hello User";
-    }
-//
-//    @GetMapping("/seller")
+//    @GetMapping("/user")
+//    @CrossOrigin(origins = "http://localhost:8082")
 //    @ResponseBody
-//    public String adminHome() {
-//        return "Hello admin";
+//    public String userHome() {
+//        return "Hello User";
 //    }
+
 
 }

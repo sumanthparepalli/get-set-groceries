@@ -10,7 +10,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients("com.ecommerce.getsetgroceries.serviceProxy")
 @EnableDiscoveryClient
 public class GetSetGroceriesApplication {
 

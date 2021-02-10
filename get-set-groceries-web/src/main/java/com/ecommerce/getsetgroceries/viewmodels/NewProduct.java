@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,7 +20,7 @@ public class NewProduct {
     private Double discount;
     private Double price;
     private Set<String> categories;
-    private List<MultipartFile> images;
+    private MultipartFile[] images;
 
     public NewProduct(Long product_id, String product_name, String product_description, Long quantity, Double discount, Double price, Set<String> categories) {
         this.product_id = product_id;

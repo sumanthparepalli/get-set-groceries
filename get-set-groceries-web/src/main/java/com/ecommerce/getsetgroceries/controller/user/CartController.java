@@ -116,32 +116,6 @@ public class CartController {
         return cartService.addToCart(addressId, cartReq, userDetails);
     }
 
-//    @PostMapping(value = "/remove/{id}")
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public ObjectNode removeItem2(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        ObjectNode objectNode = mapper.createObjectNode();
-//        String username = cartService.getUsernameByOrderDetailsId(id);
-//        if (username == null || !username.equals(userDetails.getUsername())) {
-//            objectNode.put("status", "400");
-//            objectNode.put("message", "Bad Request");
-//            return objectNode;
-//        }
-//        try {
-//            orderDetailsService.remove(id);
-//            Order order = cartService.getCartOrderOptional(userDetails.getUsername()).get();
-//            orderService.updateOrderTotal(order.getId(), orderDetailsRepo.findOrderTotalByOrderId(order.getId()));
-//
-//            objectNode.put("status", "202");
-//            objectNode.put("message", "Item removed from cart!!");
-//            objectNode.put("total", order.getAmount());
-//        } catch (Exception e) {
-//            objectNode.put("status", "500");
-//            objectNode.put("message", "Error occurred!!");
-//        }
-//        return objectNode;
-//    }
-
     @GetMapping(value = "/remove/{id}")
 //    @Transactional
     public String removeItem(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl userDetails, RedirectAttributes redirectAttributes) {

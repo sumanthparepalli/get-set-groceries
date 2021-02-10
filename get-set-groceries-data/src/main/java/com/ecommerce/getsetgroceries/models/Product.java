@@ -5,6 +5,7 @@ import com.ecommerce.getsetgroceries.resultMappings.ProductInventorySeller;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +59,7 @@ public class Product {
     @JoinTable(name = "product_images",
             joinColumns = @JoinColumn(name = "product_id")
     )
-    public List<String> images;
+    public List<String> imageId;
 
     public Product(long id, String name, String description) {
         this.id = id;
@@ -67,5 +68,13 @@ public class Product {
     }
 
     public Product() {
+    }
+
+    public List<String> getImageId() {
+        if(imageId==null)
+        {
+            imageId=new ArrayList<>();
+        }
+        return imageId;
     }
 }

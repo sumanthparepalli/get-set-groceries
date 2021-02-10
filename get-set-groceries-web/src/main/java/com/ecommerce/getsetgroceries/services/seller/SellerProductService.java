@@ -5,11 +5,13 @@ import com.ecommerce.getsetgroceries.repositories.CategoryRepo;
 import com.ecommerce.getsetgroceries.repositories.InventoryRepo;
 import com.ecommerce.getsetgroceries.repositories.ProductRepo;
 import com.ecommerce.getsetgroceries.repositories.SellerRepo;
+import com.ecommerce.getsetgroceries.serviceProxy.ImageServiceProxy;
 import com.ecommerce.getsetgroceries.viewmodels.NewProduct;
 import com.ecommerce.getsetgroceries.viewmodels.PartialProduct;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,18 +27,25 @@ public class SellerProductService {
     private final InventoryRepo inventoryRepo;
     private final SellerRepo sellerRepo;
     private final CategoryRepo categoryRepo;
+    private final ImageServiceProxy imageServiceProxy;
     @PersistenceContext
     private EntityManager em;
 
-    public SellerProductService(ProductRepo productRepo, InventoryRepo inventoryRepo, SellerRepo sellerRepo, CategoryRepo categoryRepo) {
+    public SellerProductService(ProductRepo productRepo, InventoryRepo inventoryRepo, SellerRepo sellerRepo, CategoryRepo categoryRepo, ImageServiceProxy imageServiceProxy) {
         this.productRepo = productRepo;
         this.inventoryRepo = inventoryRepo;
         this.sellerRepo = sellerRepo;
         this.categoryRepo = categoryRepo;
+        this.imageServiceProxy = imageServiceProxy;
     }
 
     public Product getProduct(Long id) {
         return productRepo.findById(id).get();
+    }
+
+    private List<String> uploadAndGetIds(MultipartFile[] images) {
+        return imageServiceProxy.uploadFiles(images);
+//        return Arrays.stream(images).map(imageServiceProxy::uploadFile).collect(Collectors.toList());
     }
 
     public boolean addNewProduct(NewProduct newProduct, User user, Boolean isUpdate) {
@@ -49,6 +58,23 @@ public class SellerProductService {
                 .build();
         if (isUpdate) {
             product.setId(newProduct.getProduct_id());
+            if (newProduct.getImages() != null && newProduct.getImages().length > 0) {
+                List<String> imageId = productRepo.findById(newProduct.getProduct_id()).get().getImageId();
+                imageId.addAll(uploadAndGetIds(newProduct.getImages()));
+                product.setImageId(imageId);
+            }
+        } else {
+            if (newProduct.getImages() != null && newProduct.getImages().length > 0) {
+                System.out.println();
+                System.out.println("Images Received: " + newProduct.getImages().length);
+                System.out.println();
+                product.setImageId(uploadAndGetIds(newProduct.getImages()));
+                System.out.println();
+                System.out.println("Images Processed");
+                System.out.println();
+            } else {
+                System.out.println("No images received");
+            }
         }
         productRepo.save(product);
         Seller seller = user.seller;

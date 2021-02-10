@@ -5,6 +5,7 @@ import com.ecommerce.getsetgroceries.repositories.InventoryRepo;
 import com.ecommerce.getsetgroceries.repositories.ProductRepo;
 import com.ecommerce.getsetgroceries.repositories.UserAddressRepo;
 import com.ecommerce.getsetgroceries.resultMappings.ProductInventorySeller;
+import com.ecommerce.getsetgroceries.serviceProxy.ImageServiceProxy;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("rawtypes")
 @Service
@@ -22,13 +25,15 @@ public class ProductService {
     private final ProductRepo productRepo;
     private final InventoryRepo inventoryRepo;
     private final UserAddressRepo addressRepo;
+    private final ImageServiceProxy imageServiceProxy;
     @PersistenceContext
     private EntityManager em;
 
-    public ProductService(ProductRepo productRepo, InventoryRepo inventoryRepo, UserAddressRepo addressRepo) {
+    public ProductService(ProductRepo productRepo, InventoryRepo inventoryRepo, UserAddressRepo addressRepo, ImageServiceProxy imageServiceProxy) {
         this.productRepo = productRepo;
         this.inventoryRepo = inventoryRepo;
         this.addressRepo = addressRepo;
+        this.imageServiceProxy = imageServiceProxy;
     }
 
     public List<ProductInventorySeller> getProductSellersByProductId(long productId) {
@@ -72,27 +77,17 @@ public class ProductService {
         return getProductDetailsByZipcode(zipcode,pgNo);
     }
 
-
-    /*public List<ProductInventorySeller> getSellerDetailsByProductId(long productId)
+    public List<String> getImages(Collection<Product> products)
     {
-        Query nativeQuery = em.createNativeQuery("select s.id as seller_id," +
-                " s.seller_name," +
-                " i.price," +
-                " i.quantity," +
-                " i.discount," +
-                " i.demand " +
-                "from products p " +
-                "join inventory i on p.id = i.product_id " +
-                "join sellers s on i.seller_id = s.id " +
-                "where p.id=:productId", "product-inventory-seller");
-        nativeQuery.setParameter("productId", productId);
-        List<ProductInventorySeller> productList = new ArrayList<>();
-        nativeQuery.getResultList().iterator().forEachRemaining((obj) -> productList.add((ProductInventorySeller) obj));
-        return productList;
-    }*/
-
+        return products.stream().map(product -> imageServiceProxy.retrieveImageAsBase64(product.imageId.get(0))).collect(Collectors.toList());
+    }
 
     public Product getProduct(Long id) {
         return productRepo.findById(id).get();
+    }
+
+    public List<String> getImagesOfProduct(Product product)
+    {
+        return product.imageId.stream().map(imageServiceProxy::retrieveImageAsBase64).collect(Collectors.toList());
     }
 }

@@ -38,7 +38,7 @@ public class SellerCreditController {
         model.addAttribute("credits", allCreditRequests);
         List<Double> amounts = new ArrayList<>();
         allCreditRequests.forEach(x -> {
-            amounts.add(x.contris.stream().mapToDouble(CreditSchemeContri::getAmount).sum());
+            amounts.add(x.contris.stream().mapToDouble(CreditSchemeContri::getAmountResolved).sum());
         });
         model.addAttribute("amounts", amounts);
         return "seller/credit-requests";

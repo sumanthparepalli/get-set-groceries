@@ -50,15 +50,13 @@ public class InventoryController {
     }
 
     @ModelAttribute("products")
-    public List<PartialProduct> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
+    public List<PartialProduct> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         return sellerProductService.getPartialProducts(user.seller.getId());
     }
 
     @ModelAttribute("existingProducts")
-    public List<PartialProduct> getNonSellingProducts(@AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
+    public List<PartialProduct> getNonSellingProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         return sellerProductService.getPartialProductsExisting(user.seller.getId());
     }
@@ -108,10 +106,8 @@ public class InventoryController {
     }
 
     @PostMapping("/update")
-    public String updateInventory(@ModelAttribute("product") @Valid NewProduct product, BindingResult bindingResult,@AuthenticationPrincipal UserDetailsImpl userDetails, RedirectAttributes redirectAttributes)
-    {
-        if(bindingResult.hasErrors())
-        {
+    public String updateInventory(@ModelAttribute("product") @Valid NewProduct product, BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl userDetails, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             return "seller/updateInventory";
         }
         sellerProductService.addNewProduct(product, userDetails.getUser(), true);
@@ -120,17 +116,14 @@ public class InventoryController {
     }
 
     @GetMapping("/add/existing")
-    public String addExistingInventoryView(Model model)
-    {
+    public String addExistingInventoryView(Model model) {
         model.addAttribute("inventory", new Inventory());
         return "seller/addExistingToInventory";
     }
 
     @PostMapping("/add/existing")
-    public String addExistingInventory(@ModelAttribute("inventory") @Valid Inventory inventory, BindingResult bindingResult, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
-        if (bindingResult.hasErrors())
-        {
+    public String addExistingInventory(@ModelAttribute("inventory") @Valid Inventory inventory, BindingResult bindingResult, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (bindingResult.hasErrors()) {
             return "seller/addExistingToInventory";
         }
         sellerProductService.addExistingProduct(inventory, userDetails.getUser());
@@ -142,17 +135,15 @@ public class InventoryController {
     @GetMapping("/get/{id}")
     @CrossOrigin(origins = "http://localhost:8082")
     @ResponseBody
-    public ResponseEntity<NewProduct> getInventoryItem(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
-        NewProduct inventory = sellerInventoryService.getInventory(userDetails.getUser().seller.getId(),id);
+    public ResponseEntity<NewProduct> getInventoryItem(@PathVariable("id") long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        NewProduct inventory = sellerInventoryService.getInventory(userDetails.getUser().seller.getId(), id);
         return ResponseEntity.ok(inventory);
     }
 
     @GetMapping("/get/product/{id}")
     @CrossOrigin(origins = "http://localhost:8082")
     @ResponseBody
-    public ResponseEntity<ProductResponse> getInventoryItem(@PathVariable("id") long id)
-    {
+    public ResponseEntity<ProductResponse> getInventoryItem(@PathVariable("id") long id) {
         return ResponseEntity.ok(sellerInventoryService.getProductResponse(id));
     }
 

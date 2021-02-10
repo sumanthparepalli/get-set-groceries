@@ -100,9 +100,10 @@ public class PaymentService {
                     .getResultList();
             for(var i:resultList)
             {
-                List<Tuple> tuple = (List<Tuple>) em.createNativeQuery("select cc.credit_scheme_id,cc.amount, csr.discount from credit_scheme_contri cc join credit_scheme_req csr " +
+                List<Tuple> tuple = (List<Tuple>) em.createNativeQuery("select cc.credit_scheme_id,cc.amount, csr.discount " +
+                        "from credit_scheme_contri cc join credit_scheme_req csr " +
                         "on cc.credit_scheme_id = csr.id where csr.sellers_id=:sellerId and cc.amount > cc.amount_resolved " +
-                        " and DATE_ADD(cc.date,INTERVAL csr.locking_period DAY)<=DATE(NOW()) ORDER BY cc.date DESC LIMIT 1", Tuple.class)
+                        " and DATE_ADD(cc.date,INTERVAL csr.locking_period DAY)<=DATE(NOW()) ORDER BY cc.date LIMIT 1", Tuple.class)
                         .setParameter("sellerId", i.get(0, Long.class))
                         .getResultList();
                 if(tuple != null && tuple.size()>0)
@@ -112,7 +113,9 @@ public class PaymentService {
                     Float balance = tuple.get(0).get("amount",Float.class)*(1+discount/100);
                     Float bal = tuple.get(0).get("amount", Float.class);
                     long csrId = tuple.get(0).get(0, Integer.class);
-                    CreditSchemeContri cc = (CreditSchemeContri) em.createQuery("select cc from CreditSchemeContri cc where cc.userId=:userId and cc.creditSchemeId=:csrId order by cc.date")
+                    CreditSchemeContri cc = (CreditSchemeContri) em.createNativeQuery("select cc.* from credit_scheme_contri cc inner join credit_scheme_req csr " +
+                            "where cc.user_id=:userId and cc.credit_scheme_id=:csrId and cc.amount>cc.amount_resolved and " +
+                            "DATE_ADD(cc.date,INTERVAL csr.locking_period DAY)<=DATE(NOW()) order by cc.date", CreditSchemeContri.class)
                             .setParameter("csrId", csrId)
                             .setParameter("userId", user.getId())
                             .setMaxResults(1)
